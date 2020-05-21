@@ -3,8 +3,8 @@ from discord.ext import commands
 import os
 import asyncio
 
-ADMIN = int(os.environ('ADMIN_IDNUM'))
-TOKEN = os.environ('BOT_TOKEN')
+ADMIN = int(os.environ['ADMIN_IDNUM'])
+TOKEN = os.environ['BOT_TOKEN']
 BOT_PREFIX = ('=', '$')
 STARTUP_EXTENSIONS = ['chat', 'mornitor', 'emoji']
 
