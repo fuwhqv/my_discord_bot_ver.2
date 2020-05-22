@@ -38,5 +38,13 @@ class emoji(commands.Cog):
         await ctx.send(res)
 
 
+    @commands.command()
+    async def elist(self, ctx):
+        res = ''
+        for name, em in list(emojiGroups.items()):
+            res += '<{0}:{1}:{2}> : {1}\n'.format('a' if em[0] else '', name, em[1])
+        await ctx.send(res)
+
+
 def setup(bot):
     bot.add_cog(emoji(bot))
