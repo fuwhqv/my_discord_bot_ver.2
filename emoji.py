@@ -17,8 +17,8 @@ class emoji(commands.Cog):
         for guild in self.bot.guilds:
             for em in guild.emojis:
                 emojiGroups[em.name] = (em.animated, em.id)
-        for x in emojiGroups.items():
-            print(x)
+        '''for x in emojiGroups.items():
+            print(x)'''
 
 
     @commands.command(name='emoji'
@@ -41,8 +41,11 @@ class emoji(commands.Cog):
     @commands.command()
     async def elist(self, ctx):
         res = ''
+        i=0
         for name, em in list(emojiGroups.items()):
-            res += '<{0}:{1}:{2}> : {1}\n'.format('a' if em[0] else '', name, em[1])
+            i+=1
+            res += '<{0}:{1}:{2}> : `{1:15s}`{3}'\
+                .format('a' if em[0] else '', name, em[1], '\n' if i%3 == 0 else ' ')
         await ctx.send(res)
 
 
