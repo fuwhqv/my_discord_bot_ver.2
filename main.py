@@ -83,10 +83,6 @@ async def showStatus():
         await asyncio.sleep(1800)
 
 
-bot.loop.create_task(showStatus())
-bot.run(TOKEN)
-
-
 for extension in STARTUP_EXTENSIONS:
     try:
         bot.load_extension(extension)
@@ -96,3 +92,5 @@ for extension in STARTUP_EXTENSIONS:
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
 
+bot.loop.create_task(showStatus())
+bot.run(TOKEN)
