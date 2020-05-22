@@ -49,7 +49,7 @@ class emoji(commands.Cog):
         i=0
         for name, em in list(emojiGroups.items()):
             i+=1
-            res += '<{0}:{1}:{2}> : `{1:15s}` '.format('a' if em[0] else '', name, em[1])
+            res += '<{0}:{1}:{2}> `{1:15s}` '.format('a' if em[0] else '', name, em[1])
             if i%3==0:
                 await ctx.send(res)
                 res = ''
