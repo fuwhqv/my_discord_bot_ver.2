@@ -17,9 +17,11 @@ class emoji(commands.Cog):
     async def ereload(self, ctx):
         global emojiGroups
         emojiGroups = {}
+        await ctx.send('Loading emojis...')
         for guild in self.bot.guilds:
             for em in guild.emojis:
                 emojiGroups[em.name] = (em.animated, em.id)
+        await ctx.send('Loading complete.')
 
 
     @commands.command(name='emoji'

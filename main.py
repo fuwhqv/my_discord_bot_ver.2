@@ -15,18 +15,16 @@ ls = []
                 ,description="Load extension"
                 ,pass_context=True)
 async def load(ctx, extension_name : str=None):
-    if ctx.message.author.id == ADMIN:
-        if extension_name is not None:
-            try:
-                bot.load_extension(extension_name)
-                ls.append(extension_name)
-                await ctx.send("{} loaded.".format(extension_name))
-            except Exception as e:
-                exc = '{}: {}'.format(type(e).__name__, e)
-                print('Failed to load extension {}\n{}'.format(extension, exc))
-    else:
-        #print(" "*45+"\033[93m^ Has no permission\033[0m")
-        await ctx.send("ㅋ")
+    if extension_name is not None:
+        try:
+            bot.load_extension(extension_name)
+            ls.append(extension_name)
+            await ctx.send("{} loaded.".format(extension_name))
+        except Exception as e:
+            exc = '{}: {}'.format(type(e).__name__, e)
+            print('Failed to load extension {}\n{}'.format(extension, exc))
+            await ctx.send("Failed to load {}.".format(extension_name))
+
     
 @bot.command(name="unload"
                 ,description="Unload extension"
@@ -85,6 +83,10 @@ async def showStatus():
         await asyncio.sleep(1800)
 
 
+bot.loop.create_task(showStatus())
+bot.run(TOKEN)
+
+
 for extension in STARTUP_EXTENSIONS:
     try:
         bot.load_extension(extension)
@@ -94,5 +96,3 @@ for extension in STARTUP_EXTENSIONS:
         print('Failed to load extension {}\n{}'.format(extension, exc))
 
 
-bot.loop.create_task(showStatus())
-bot.run(TOKEN)
