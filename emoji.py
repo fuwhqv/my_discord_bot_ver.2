@@ -6,11 +6,8 @@ emojiGroups = {}
 class emoji(commands.Cog):
     def __init__(self, bot):
         self.bot=bot
-        await ctx.send('init0')
         for guild in self.bot.guilds:
-            await ctx.send('init1.g{}'.format(guild.name))
             for em in guild.emojis:
-                await ctx.send('init2.e{}'.format(em.name))
                 emojiGroups[em.name] = (em.animated, em.id)
 
 
