@@ -16,7 +16,7 @@ class chat(commands.Cog):
         ,description="최대 100개의 채팅 로그 삭제"
         ,pass_context=True
         )
-    @has_permissions(administrator=True)
+    @has_permissions(manage_messages=True)
     async def clear(self,ctx,num:int = 1):
         mgs=[]
         num=int(num)
