@@ -35,7 +35,7 @@ class minigames(commands.Cog):
             self.game = Baseball(int(digits))
         except:
             self.game = None
-            await ctx.send('The number for digits is invalid!')'''
+            await ctx.send('The number for digits is invalid!')
 
 
 def setup(bot):
