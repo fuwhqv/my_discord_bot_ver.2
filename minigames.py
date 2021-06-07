@@ -1,5 +1,5 @@
 from discord.ext import commands
-#from baseball import Baseball
+from baseball import Baseball
 
 
 class minigames(commands.Cog):
