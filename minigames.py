@@ -7,8 +7,7 @@ class minigames(commands.Cog):
         self.bot = bot
         self.game = {}
 
-    @commands.command(name='play',
-                      description='게임 진행을 위한 인풋/명령어 입력 커맨드',
+    @commands.command(description='게임 진행을 위한 인풋/명령어 입력 커맨드',
                       aliases = ['input', 'move'])
     async def play(self, ctx, gCmd:str = None):
         gGame = self.game.get(ctx.guild)
@@ -26,7 +25,7 @@ class minigames(commands.Cog):
         if result[0] == 1:
             self.game[ctx.guild] = None
             
-    @commands.command(name='숫자야구',
+    @commands.command(description='숫자야구(3~4자리)',
                       aliases=['baseball'])
     async def numberBaseball(self, ctx, digits:str ='3'):
         if self.game.get(ctx.guild) is not None:
