@@ -6,7 +6,7 @@ import asyncio
 ADMIN = int(os.environ['ADMIN_IDNUM'])
 TOKEN = os.environ['BOT_TOKEN']
 BOT_PREFIX = ('=', '$')
-STARTUP_EXTENSIONS = ['chat', 'mornitor']
+STARTUP_EXTENSIONS = ['chat', 'minigames']
 
 bot = commands.Bot(command_prefix = BOT_PREFIX)
 ls = []
