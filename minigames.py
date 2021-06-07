@@ -1,12 +1,12 @@
 from discord.ext import commands
-from baseball import Baseball
+#from baseball import Baseball
 
 
 class minigames(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.game = None
-
+'''
     @commands.command(name='게임 진행',
                       description='게임 진행을 위한 인풋/명령어 입력 커맨드')
     async def play(self, ctx, gCmd):
@@ -31,7 +31,7 @@ class minigames(commands.Cog):
         except:
             self.game = None
             await ctx.send('The number for digits is invalid!')
-
+'''
 
 def setup(bot):
     bot.add_cog(minigames(bot))
