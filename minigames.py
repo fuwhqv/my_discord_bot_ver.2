@@ -11,6 +11,10 @@ class minigames(commands.Cog):
                       description='게임 진행을 위한 인풋/명령어 입력 커맨드',
                       aliases = ['input', 'move'])
     async def play(self, ctx, gCmd:str = None):
+        if self.game is None:
+            await ctx.send('No game playing!')
+            return
+        
         if gCmd is None:
             await ctx.send('Invalid input!')
             return
@@ -20,19 +24,19 @@ class minigames(commands.Cog):
 
         if result[0] == 1:
             self.game = None
-'''
+            
     @commands.command(name='숫자야구',
                       aliases=['baseball'])
     async def numberBaseball(self, digits='3'):
         if self.game is not None:
             await ctx.send('A game is already on play!')
             return
-        try:
+        '''try:
             self.game = Baseball(int(digits))
         except:
             self.game = None
-            await ctx.send('The number for digits is invalid!')
-'''
+            await ctx.send('The number for digits is invalid!')'''
+
 
 def setup(bot):
     bot.add_cog(minigames(bot))
