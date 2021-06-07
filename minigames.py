@@ -7,9 +7,10 @@ class minigames(commands.Cog):
         self.bot = bot
         self.game = None
 
-    @commands.command(name='게임 진행',
-                      description='게임 진행을 위한 인풋/명령어 입력 커맨드')
-    async def play(self, ctx, gCmd):
+    @commands.command(name='play',
+                      description='게임 진행을 위한 인풋/명령어 입력 커맨드',
+                      aliases = ['input', 'move'])
+    async def play(self, ctx, gCmd:str = None):
         if gCmd is None:
             await ctx.send('Invalid input!')
             return
