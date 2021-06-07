@@ -27,11 +27,11 @@ class minigames(commands.Cog):
             
     @commands.command(name='숫자야구',
                       aliases=['baseball'])
-    async def numberBaseball(self, digits='3'):
+    async def numberBaseball(self, ctx, digits:str ='3'):
         if self.game is not None:
             await ctx.send('A game is already on play!')
             return
-        '''try:
+        try:
             self.game = Baseball(int(digits))
         except:
             self.game = None
