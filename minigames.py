@@ -24,7 +24,7 @@ class minigames(commands.Cog):
         await ctx.send(result[1])
 
         if result[0] == 1:
-            self.game = None
+            self.game[ctx.guild] = None
             
     @commands.command(name='숫자야구',
                       aliases=['baseball'])
