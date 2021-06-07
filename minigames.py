@@ -33,6 +33,7 @@ class minigames(commands.Cog):
             return
         try:
             self.game = Baseball(int(digits))
+            await ctx.send('The number is set, ready to play!')
         except:
             self.game = None
             await ctx.send('The number for digits is invalid!')
