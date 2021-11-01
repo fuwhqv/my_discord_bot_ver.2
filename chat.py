@@ -13,7 +13,7 @@ class chat(commands.Cog):
             await ctx.send("Pong!")
 
     @commands.command(name='sora'
-        ,alias=['소라고둥님']
+        ,aliases=['소라고둥님']
         )
     async def sora(self, ctx, s = None):
         await ctx.send('뭐' if s is None else choice(['응', '아니']))
