@@ -1,7 +1,7 @@
 from random import choice
 import os
 
-words_path =  os.path.join(os.getcwd(), 'minigames', 'sgb-words.txt')
+words_path =  os.path.join(os.getcwd(), 'sgb-words.txt')
 
 upperRange = range(65, 91)
 class Wordle:
