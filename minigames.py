@@ -20,7 +20,8 @@ class minigames(commands.Cog):
             return
 
         result = gGame.update(gCmd)
-        await ctx.send(result[1])
+        for res in result[1:]:
+            await ctx.send(res)
 
         if result[0] == 1:
             self.game[ctx.guild] = None
