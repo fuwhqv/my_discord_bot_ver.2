@@ -104,6 +104,7 @@ class Wordle:
                 result[i] = 1
                 self.alphabets[ord(w[i])-65][i] = 1
                 counts[ord(w[i])-65] += 1
+                break
 
         for i in range(5):
             if not black[i]: continue
