@@ -24,7 +24,7 @@ class minigames(commands.Cog):
                 939549251522920468, # Yellow
                 939551066234703972, # Green
                 939581759023112223, # Black
-                #939581912379424809 # White
+                939581912379424809  # White
             ]: continue
             for emoji in guild.emojis:
                 self.emojiGroups[emoji.name] = (emoji.animated, emoji.id)
@@ -55,6 +55,15 @@ class minigames(commands.Cog):
 
             if result[0] == 1:
                 await ctx.send(result[3])
+            else:
+                used = gGame.getUsed()
+                usedlayout = ''
+                for i in range(0, 26):
+                    ename = f'{['Black', 'Yellow', 'Green', 'White'][used[i]]}_{chr(i+65)}'
+                    emoji = self.emojiGroups[ename]
+                    usedlayout += f'<:{ename}:{emoji[1]}>'
+                await ctx.send(usedlayout)
+
         else:
             for res in result[1:]:
                 await ctx.send(res)
