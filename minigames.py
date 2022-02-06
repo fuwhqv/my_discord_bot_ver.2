@@ -12,7 +12,6 @@ class minigames(commands.Cog):
     def __init__(self, bot):
         self.bot  = bot
         self.game = {}
-        self.log  = []
         self.isEmojiLoaded = False
         self.emojiGroups = {}
 
@@ -35,7 +34,7 @@ class minigames(commands.Cog):
     @commands.command(description='게임 진행을 위한 인풋/명령어 입력 커맨드',
                       aliases = ['input', 'move'])
     async def play(self, ctx, gCmd:str = None):
-        gGame = self.game.get(ctx.guild)
+        gGame, gLog = self.game.get(ctx.guild)
         if gGame is None:
             await ctx.send('No game playing!')
             return
@@ -51,8 +50,8 @@ class minigames(commands.Cog):
                 ename = f'{emojiToColor[result[1][i]]}_{c}'
                 emoji = self.emojiGroups[ename]
                 res += f'<:{ename}:{emoji[1]}>'
-            self.log.append(res)
-            await ctx.send('\n'.join(self.log))
+            gLog.append(res)
+            await ctx.send('\n'.join(gLog))
 
             if result[0] == 1:
                 await ctx.send(result[3])
@@ -62,7 +61,6 @@ class minigames(commands.Cog):
 
         if result[0] == 1:
             self.game[ctx.guild] = None
-            self.log = []
 
 
     @commands.command(description='숫자야구(3~4자리)',
@@ -72,7 +70,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = Baseball(int(digits))
+            self.game[ctx.guild] = [Baseball(int(digits)), []]
             await ctx.send('The number is set, ready to play!')
         except:
             self.game[ctx.guild] = None
@@ -86,7 +84,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = Wordle(hard.upper() == 'HARD')
+            self.game[ctx.guild] = [Wordle(hard.upper() == 'HARD'), []]
             await ctx.send('The word is chosen, ready to play!')
         except:
             self.game[ctx.guild] = None
