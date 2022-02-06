@@ -1,5 +1,6 @@
-from discord.ext        import commands
-from minigames import baseball, wordle
+from discord.ext import commands
+from baseball    import Baseball
+from wordle      import Wordle
 
 emojiToColor = {
     '⬛': 'Black',
@@ -44,7 +45,7 @@ class minigames(commands.Cog):
             return
 
         result = gGame.update(gCmd)
-        if isinstance(gGame, wordle.Wordle) and self.isEmojiLoaded and result[0] in [0, 1]:
+        if isinstance(gGame, Wordle) and self.isEmojiLoaded and result[0] in [0, 1]:
             res = ''
             for i, c in enumerate(gCmd.upper().strip()):
                 ename = f'{emojiToColor[result[1][i]]}_{c}'
@@ -71,7 +72,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = baseball.Baseball(int(digits))
+            self.game[ctx.guild] = Baseball(int(digits))
             await ctx.send('The number is set, ready to play!')
         except:
             self.game[ctx.guild] = None
@@ -85,7 +86,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = wordle.Wordle(hard.upper() == 'HARD')
+            self.game[ctx.guild] = Wordle(hard.upper() == 'HARD')
             await ctx.send('The word is chosen, ready to play!')
         except:
             self.game[ctx.guild] = None
