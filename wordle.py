@@ -24,7 +24,7 @@ class Wordle:
 
     def newGame(self, isHard:bool = False):
         self.tries     = 0
-        self.alphabets = [[0]*5 for _ in range(26)]
+        self.alphabets = [[-1]*5 for _ in range(26)]
         self.isHard    = isHard
         self.lastCounts= [0] * 26
         self.black     = [False] * 26
@@ -113,6 +113,13 @@ class Wordle:
         self.lastCounts = counts
         self.tries += 1
         return 0, result
+
+
+    def getUsed(self):
+        result = [] * 26
+        for idx, alist in enumerate(self.alphabets):
+            result[idx] = max(alist)
+        return result
 
 
     def update(self, gCmd:str): # a wrapper method for my discord bot
