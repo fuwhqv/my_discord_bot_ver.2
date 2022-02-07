@@ -57,11 +57,13 @@ class minigames(commands.Cog):
                 await ctx.send(result[3])
             else:
                 used = gGame.getUsed()
-                usedlayout = ''
+                usedlayout = '['
                 for i in range(0, 26):
+                    if i == 13: usedlayout += ']\n['
                     ename = f"{['Black', 'Yellow', 'Green', 'White'][used[i]]}_{chr(i+65)}"
                     emoji = self.emojiGroups[ename]
                     usedlayout += f'<:{ename}:{emoji[1]}>'
+                usedlayout += ']'
                 await ctx.send(usedlayout)
 
         else:
