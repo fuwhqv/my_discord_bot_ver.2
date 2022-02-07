@@ -109,6 +109,7 @@ class Wordle:
         for i in range(5):
             if not black[i]: continue
             self.black[ord(w[i])-65] = True
+            self.alphabets[ord(w[i])-65][i] = 0
 
         self.lastCounts = counts
         self.tries += 1
