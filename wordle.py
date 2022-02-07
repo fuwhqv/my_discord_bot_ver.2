@@ -116,7 +116,7 @@ class Wordle:
 
 
     def getUsed(self):
-        result = [] * 26
+        result = [-1] * 26
         for idx, alist in enumerate(self.alphabets):
             result[idx] = max(alist)
         return result
