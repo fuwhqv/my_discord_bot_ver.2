@@ -1,155 +1,147 @@
+from typing import Iterable
 from random import choice
 import os
 
 words_path =  os.path.join(os.getcwd(), 'sgb-words.txt')
 
-upperRange = range(65, 91)
-class Wordle:
-    def __init__(self, isHard:bool = False):
-        self.words = None
-        self.loadWords()
+class WordleBase:
+    def __init__(self, isHard:bool = False, length:int = 5, kinds:int = 26):
+        self.words  = None
+        self.length = length
+        self.kinds  = kinds
+        self._loadWords()
         self.newGame(isHard)
 
-
-    def loadWords(self):
+    def _loadWords(self):
+    #overidable
         if self.words is not None: return
         with open(words_path, 'r') as words:
             self.words = words.readlines()
         self.words = list(map(lambda x: x.upper().strip(), self.words))
 
+    def _setNewWord(self):
+    #overidable
+        self.word = choice(self.words).upper().strip()
+        #self.word = ''.join([chr(65+i) for i in range(self.length)]).upper().strip()
+        #self.word = 'SEDER'
 
-    def getNewWord(self):
-        self.word = choice(self.words).strip().upper()
+    def _getIndexOf(self, c:str):
+    #overidable
+        return (ord(c)-65)
 
+    def newGame(self, isHard:bool):
+        self.tries  = 0
+        self.isHard = isHard
+        self.status = [   -1] * self.kinds
 
-    def newGame(self, isHard:bool = False):
-        self.tries     = 0
-        self.alphabets = [[-1]*5 for _ in range(26)]
-        self.isHard    = isHard
-        self.lastCounts= [0] * 26
-        self.black     = [False] * 26
-        self.getNewWord()
+        if self.isHard:
+            self.greens = [False] * self.length
+            self.counts = [    0] * self.kinds
 
+        self._setNewWord()
 
-    def __isValidLetter(self, c:str):
-        if c is None: return False
-        if len(c) != 1: return False
-        if ord(c) not in upperRange: return False
+    def isValid(self, word:str):
+    #overidable
+        if word is None: return False
+        if len(word) != self.length: return False
+        if any(map(lambda c: ord(c) not in range(65, 91), word)): return False
+        if word not in self.words: return False
         return True
 
+    def isHardValid(self, word:Iterable):
+        # Revealed green should stay at same position
+        for idx in range(self.length):
+            if not self.greens[idx]: continue
+            if self.word[idx] != word[idx]: return False
 
-    def isValidWord(self, w:str):
-        if w is None: return False
-        if len(w) != 5: return False
-        for c in w:
-            if not self.__isValidLetter(c): return False
-        if w not in self.words: return False
+        # green + yellow should appear not less than before
+        counts = [0] * self.kinds
+        for c in word:
+            counts[self._getIndexOf(c)] += 1
 
-        return True
-
-
-    def isValidWordHard(self, w:str):
-        for alpha, alist in enumerate(self.alphabets):
-            pos = []
-
-            for idx, val in enumerate(alist):
-                if val == 2:
-                    pos.append(idx)
-
-            # revealed green letters should have same position
-            for p in pos:
-                if chr(alpha+65) != w[p]: return False
-
-        # green + yellow letters should appear not less than before
-        counts = [0] * 26
-        for c in w:
-            counts[ord(c)-65] += 1
-        for a, b in zip(self.lastCounts, counts):
-            if a > b: return False
+        if any(map(lambda target, guessd: target > guessd, \
+            self.counts, counts)): return False
 
         return True
 
+    def _elementNE(self, e1, e2):
+        return e1!=e2
 
-    def compare(self, w:str):
-        if not self.isValidWord(w): return 1, None
-        if self.isHard and (not self.isValidWordHard(w)): return 2, None
+    def compare(self, word:Iterable):
+        if not self.isValid(word): return 1, None
+        if self.isHard and not self.isHardValid(word): return 2, None
 
-        result   = [0] * 5
-        appeared = [False] * 5
-        black    = [True ] * 5
-        counts   = [0] * 26
-    
-        #checks for same position
-        for i in range(5):
-            if w[i] != self.word[i]: continue
+        alUsed = [False] * self.length
+        result = [    0] * self.length
 
-            appeared[i] = True
-            black[i] = False
-            result[i] = 2
-            self.alphabets[ord(w[i])-65][i] = 2
-            counts[ord(w[i])-65] += 1
+        if self.isHard:
+            counts = [0] * self.kinds
 
-        #checks for different position
-        for i in range(5):
-            if result[i] != 0: continue
+        # check greens
+        for idx in range(self.length):
+            if self._elementNE(word[idx], self.word[idx]): continue
 
-            for _j in range(1, 5):
-                j = (i+_j)%5
+            result[idx] = 2
+            alUsed[idx] = True
+            self.status[self._getIndexOf(word[idx])] = 2
 
-                if w[i] != self.word[j]: continue
-                if appeared[j]: continue
+            if self.isHard:
+                counts[self._getIndexOf(word[idx])]  += 1
+                self.greens[idx] = True
 
-                appeared[j] = True
-                black[i] = False
-                result[i] = 1
-                self.alphabets[ord(w[i])-65][i] = 1
-                counts[ord(w[i])-65] += 1
+        # check yellows
+        for idx_guessd in range(self.length):
+            if result[idx_guessd] != 0: continue
+
+            for it in range(1, self.length):
+                idx_target = (idx_guessd + it) % self.length
+
+                if self._elementNE(
+                    word[idx_guessd],
+                    self.word[idx_target]
+                ): continue
+                if alUsed[idx_target]: continue
+
+                result[idx_guessd] = 1
+                alUsed[idx_target] = True
+                self.status[self._getIndexOf(word[idx_guessd])] = max(
+                    self.status[self._getIndexOf(word[idx_guessd])],
+                    1
+                )
+
+                if self.isHard:
+                    counts[self._getIndexOf(word[idx_guessd])] += 1
+
                 break
 
-        for i in range(5):
-            if not black[i]: continue
-            self.black[ord(w[i])-65] = True
-            self.alphabets[ord(w[i])-65][i] = 0
+        # register blacks
+        for idx in range(self.length):
+            if result[idx] != 0: continue
 
-        self.lastCounts = counts
+            self.status[self._getIndexOf(word[idx])] = max(
+                self.status[self._getIndexOf(word[idx])],
+                0
+            )
+
         self.tries += 1
+        if self.isHard: self.counts = counts
+
         return 0, result
 
 
-    def getUsed(self):
-        result = [-1] * 26
-        for idx, alist in enumerate(self.alphabets):
-            result[idx] = max(alist)
-        return result
-
-
-    def update(self, gCmd:str): # a wrapper method for my discord bot
-        ret, res = self.compare(gCmd.strip().upper())
-        msg = f"Word{'*' if self.isHard else ''}: {gCmd.lower().strip()}"
-        if     ret  ==  1: return [-1, 'The input is invalid!']
-        if     ret  ==  2: return [-2, 'All revealed hints must be used!']
-        if sum(res) == 10: return [ 1, '🟩🟩🟩🟩🟩', msg, f'Finished in {self.tries} tries{" with hard mode" if self.isHard else ""}.']
-        st = ''
-        for i in res:
-            st += ['⬛', '🟨', '🟩'][i]
-        
-        greens = '🟩: '
-        yellows= '🟨: '
-        blacks = '⬛: '
-
-        for idx, alist in enumerate(self.alphabets):
-            if   2 in alist:
-                greens  += chr(idx + 65)
-                self.black[idx] = False
-            elif 1 in alist:
-                yellows += chr(idx + 65)
-                self.black[idx] = False
-        
-        for idx, val in enumerate(self.black):
-            if not val: continue
-            blacks += chr(idx + 65)
-
-        return [0, st, msg, '\n'.join([greens, yellows, blacks])]
+class Wordle(WordleBase):
+    def update(self, gCmd:str):
+        ret, res = self.compare(gCmd.upper().strip())
+        if ret == 0 and sum(res) == 10:
+            ret = -1
+        return {
+            'ret'   : -ret,
+            'isHard': self.isHard,
+            'input' : gCmd.upper().strip(),
+            'res'   : res,
+            'tries' : self.tries,
+            'used'  : self.status
+        }
 
 
 def main():
@@ -158,11 +150,13 @@ def main():
     while True:
         word = input('5 Letters word input: ')
         word = word.upper().strip()
-        retcode, result = wordle.compare(word)
+        _, result = wordle.compare(word)
 
         if result is not None:
             for i in result: print('.?!'[i], end='')
-            print()
+        else:
+            print(f'err:{_}', end='')
+        print(f"[{wordle.word}]")
 
         if result is not None and sum(result) == 10: break
 
