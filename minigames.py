@@ -35,28 +35,31 @@ class minigames(commands.Cog):
     async def play(self, ctx, *gArgs):
         gCmd:str = ' '.join(gArgs)
         gGame, gLog = self.game.get(ctx.guild)
-        if gGame is None:
-            await ctx.send('No game playing!')
-            return
+        try:
+            if gGame is None:
+                await ctx.send('No game playing!')
+                return
 
-        if gCmd == '':
-            await ctx.send('Invalid input!')
-            return
+            if gCmd == '':
+                await ctx.send('Invalid input!')
+                return
 
-        result = gGame.update(gCmd)
+            result = gGame.update(gCmd)
 
-        if   isinstance(gGame, madle.Madle):
-            await self._result_madle(ctx, gLog, result)
-            return
+            if   isinstance(gGame, madle.Madle):
+                await self._result_madle(ctx, gLog, result)
+                return
 
-        if isinstance(gGame, wordle.Wordle):
-            await self._result_wordle(ctx, gLog, result)
-            return
+            if isinstance(gGame, wordle.Wordle):
+                await self._result_wordle(ctx, gLog, result)
+                return
 
-        if isinstance(gGame, baseball.Baseball):
-            await self._result_baseball(ctx, gLog, result)
-            return
+            if isinstance(gGame, baseball.Baseball):
+                await self._result_baseball(ctx, gLog, result)
+                return
 
+        except Exception as e:
+            await ctx.send(f'{e}')
 
     @commands.command(description='숫자야구(3~4자리)',
                       aliases=['baseball'])
