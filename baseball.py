@@ -1,68 +1,70 @@
-import random
-from datetime import datetime
+from wordle import WordleBase
+from random import randint
 
-random.seed(datetime.now())
+class Baseball(WordleBase):
+    def __init__(self, len:int = 3):
+        super().__init__(True, len, 10)
 
-class Baseball:
-    def __init__(self, dig:int=3):
-        self.digits = dig
-        self.turn = 0
+    def _loadWords(self):
+        pass
 
-        self.number = '0'*self.digits
-        while hasDup(self.number):
-            self.number = str(random.randint(10**(self.digits-1), 10**self.digits-1))
+    def _setNewWord(self):
+        word = str(randint(100, 999))
+        while not self.isHardValid(word):
+            word = str(randint(100, 999))
+        self.word = word
 
-    def __repr__(self):
-        return 'Baseball'
+    def _getIndexOf(self, c:str):
+        return int(c)
+
+    def isValid(self, word:str):
+        try:
+            val = int(word)
+            return val >= 100 and val < 1000
+        except:
+            return False
+
+    def isHardValid(self, word:str):
+        if word[0] == '0': return False
+
+        for i in range(self.length):
+            for j in range(self.length):
+                if i==j: continue
+                if word[i] == word[j]: return False
+
+        return True
 
     def update(self, gCmd:str):
-        if not isValid(gCmd, self.digits):
-            return [-1, 'Invalid input!']
-
-        if hasDup(gCmd):
-            return [-2, 'Input has duplicate digits!']
-
-        self.turn += 1
-        return self.getResult(gCmd)
-
-    def getResult(self, val:str):
-        s,b = 0,0
-
-        for i in range(self.digits):
-            for j in range(self.digits):
-                if self.number[i]==val[j]:
-                    if i==j:
-                        s += 1
-                    else:
-                        b += 1
-
-        if s == self.digits:
-            return [1, ('Homerun! Finished in %d turns.'%self.turn)]
-        return [0, ('Turn %2d: %ds %db'%(self.turn, s, b))]
+        ret, res = self.compare(gCmd)
+        if ret == 0 and sum(res) == 2 * self.length:
+            ret = -1
+        return {
+            'ret'  : -ret,
+            'input': gCmd,
+            'res'  : res,
+            'tries': self.tries
+        }
 
 
-def hasDup(num:str):
-    for i in range(len(num)-1):
-        for j in range(i+1, len(num)):
-            if num[i]==num[j]:
-                return True
-    return False
+def main():
+    wordle = Baseball()
 
-def isValid(num:str, dig:int):
-    try:
-        tmp = int(num)
-        if len(num) != dig or not(tmp >= 10**(dig-1) and tmp <= 10**dig-1):
-            raise
-    except:
-        return False
-    return True
+    while True:
+        word = input('3 Digits number input: ').strip()
+        _, result = wordle.compare(word)
+
+        if result is not None:
+            s = sum(map(lambda x: 1 if x==2 else 0, result))
+            b = sum(map(lambda x: 1 if x==1 else 0, result))
+            print(f"Turn {wordle.tries:>2}: {s}s {b}b")
+            print(result)
+        else:
+            print(f"err:{_}", end='')
+        print(f"[{wordle.word}]")
+        print(wordle.status)
+
+        if result is not None and sum(result) == wordle.length * 2: break
+
 
 if __name__ == '__main__':
-    game = Baseball(3)
-    print(game.update('123'))
-    print(game.update('456'))
-    print(game.update('789'))
-    print(game.update('1234'))
-    print(game.update('1 23'))
-    print(game.update('abc'))
-    print(game.update('100'))
+    main()
