@@ -66,12 +66,11 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = [baseball.Baseball(int(digits)), []]
+            self.game[ctx.guild] = [Baseball(int(digits)), []]
             await ctx.send('The number is set, ready to play!')
         except Exception as e:
             self.game[ctx.guild] = None
             await ctx.send('The number for digits is invalid!')
-            await ctx.send(f'{e}')
 
 
     @commands.command(description='워들')
@@ -81,7 +80,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = [wordle.Wordle(hard.upper() == 'HARD'), []]
+            self.game[ctx.guild] = [Wordle(hard.upper() == 'HARD'), []]
             await ctx.send('The word is chosen, ready to play!')
         except:
             self.game[ctx.guild] = None
@@ -95,7 +94,7 @@ class minigames(commands.Cog):
             await ctx.send('A game is already on play!')
             return
         try:
-            self.game[ctx.guild] = [madle.Madle(), []]
+            self.game[ctx.guild] = [Madle(), []]
             await ctx.send('The word is chosen, ready to play!')
         except:
             self.game[ctx.guild] = None
