@@ -94,10 +94,10 @@ class minigames(commands.Cog):
             return
         try:
             self.game[ctx.guild] = [Madle(), []]
-            await ctx.send('The word is chosen, ready to play!')
+            await ctx.send('A mahjong hand is chosen, ready to play!')
         except:
             self.game[ctx.guild] = None
-            await ctx.send('Failed to create a wordle game...')
+            await ctx.send('Failed to create a madle game...')
 
 
 
