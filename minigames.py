@@ -68,9 +68,10 @@ class minigames(commands.Cog):
         try:
             self.game[ctx.guild] = [baseball.Baseball(int(digits)), []]
             await ctx.send('The number is set, ready to play!')
-        except:
+        except Exception as e:
             self.game[ctx.guild] = None
             await ctx.send('The number for digits is invalid!')
+            await ctx.send(f'{e}')
 
 
     @commands.command(description='워들')
